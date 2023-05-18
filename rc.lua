@@ -3,7 +3,6 @@
 pcall(require, "luarocks.loader")
 
 -- Standard awesome library
-local lain = require("lain")
 local gears = require("gears")
 local awful = require("awful")
 require("awful.autofocus")
