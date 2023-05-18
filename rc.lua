@@ -369,12 +369,17 @@ globalkeys = gears.table.join(
 	-- open browser
 	awful.key({ modkey }, "b", function()
 		awful.util.spawn("microsoft-edge-stable")
-	end, { description = "run prompt", group = "launcher" }),
+	end, { description = "run Browser", group = "launcher" }),
 
-	-- open browser
+	-- open file Manager
 	awful.key({ modkey }, "z", function()
 		awful.util.spawn("pcmanfm")
-	end, { description = "run prompt", group = "launcher" }),
+	end, { description = "run file Manager", group = "launcher" }),
+
+	-- open system settings
+	awful.key({ modkey }, "q", function()
+		awful.util.spawn("cinnamon-settings")
+	end, { description = "run system settings", group = "launcher" }),
 
 	awful.key({ modkey }, "x", function()
 		awful.prompt.run({
