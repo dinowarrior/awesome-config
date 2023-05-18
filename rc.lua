@@ -8,6 +8,10 @@ local awful = require("awful")
 require("awful.autofocus")
 -- Widget and layout library
 local wibox = require("wibox")
+local cpu_widget = require("./awesome-wm-widgets.cpu-widget.cpu-widget")
+local ram_widget = require("./awesome-wm-widgets.ram-widget.ram-widget")
+local volume_widget = require("./awesome-wm-widgets.volume-widget.volume")
+local battery_widget = require("./awesome-wm-widgets.battery-widget.battery")
 -- Theme handling library
 local beautiful = require("beautiful")
 -- Notification library
@@ -71,19 +75,19 @@ modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
-	awful.layout.suit.floating,
+	-- awful.layout.suit.floating,
 	awful.layout.suit.tile,
-	awful.layout.suit.tile.left,
-	awful.layout.suit.tile.bottom,
-	awful.layout.suit.tile.top,
-	awful.layout.suit.fair,
-	awful.layout.suit.fair.horizontal,
-	awful.layout.suit.spiral,
-	awful.layout.suit.spiral.dwindle,
-	awful.layout.suit.max,
-	awful.layout.suit.max.fullscreen,
-	awful.layout.suit.magnifier,
-	awful.layout.suit.corner.nw,
+	-- awful.layout.suit.tile.left,
+	-- awful.layout.suit.tile.bottom,
+	-- awful.layout.suit.tile.top,
+	-- awful.layout.suit.fair,
+	-- awful.layout.suit.fair.horizontal,
+	-- awful.layout.suit.spiral,
+	-- awful.layout.suit.spiral.dwindle,
+	-- awful.layout.suit.max,
+	-- awful.layout.suit.max.fullscreen,
+	-- awful.layout.suit.magnifier,
+	-- awful.layout.suit.corner.nw,
 	-- awful.layout.suit.corner.ne,
 	-- awful.layout.suit.corner.sw,
 	-- awful.layout.suit.corner.se,
@@ -254,11 +258,15 @@ awful.screen.connect_for_each_screen(function(s)
 		s.mytasklist, -- Middle widget
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
-			mykeyboardlayout,
+			volume_widget({
+				widget_type = "arc",
+			}),
+			cpu_widget(),
+			ram_widget(),
 			wibox.widget.systray(),
+			battery_widget(),
 			mytextclock,
 			s.mylayoutbox,
-			require("battery-widget")({}),
 		},
 	})
 end)
@@ -352,11 +360,20 @@ globalkeys = gears.table.join(
 		end
 	end, { description = "restore minimized", group = "client" }),
 
+	-- Launcher Shortcuts
 	-- Prompt
 	awful.key({ modkey }, "r", function()
-		-- 	awful.screen.focused().mypromptbox:run()
-		-- end, { description = "run prompt", group = "launcher" }),
 		awful.util.spawn("rofi -show run")
+	end, { description = "run prompt", group = "launcher" }),
+
+	-- open browser
+	awful.key({ modkey }, "b", function()
+		awful.util.spawn("microsoft-edge-stable")
+	end, { description = "run prompt", group = "launcher" }),
+
+	-- open browser
+	awful.key({ modkey }, "z", function()
+		awful.util.spawn("pcmanfm")
 	end, { description = "run prompt", group = "launcher" }),
 
 	awful.key({ modkey }, "x", function()
@@ -565,36 +582,36 @@ client.connect_signal("request::titlebars", function(c)
 		end)
 	)
 
-	awful.titlebar(c):setup({
-		{ -- Left
-			awful.titlebar.widget.iconwidget(c),
-			buttons = buttons,
-			layout = wibox.layout.fixed.horizontal,
-		},
-		{ -- Middle
-			{ -- Title
-				align = "center",
-				widget = awful.titlebar.widget.titlewidget(c),
-			},
-			buttons = buttons,
-			layout = wibox.layout.flex.horizontal,
-		},
-		{ -- Right
-			awful.titlebar.widget.floatingbutton(c),
-			awful.titlebar.widget.maximizedbutton(c),
-			awful.titlebar.widget.stickybutton(c),
-			awful.titlebar.widget.ontopbutton(c),
-			awful.titlebar.widget.closebutton(c),
-			layout = wibox.layout.fixed.horizontal(),
-		},
-		layout = wibox.layout.align.horizontal,
-	})
+	-- awful.titlebar(c):setup({
+	-- 	{ -- Left
+	-- 		awful.titlebar.widget.iconwidget(c),
+	-- 		buttons = buttons,
+	-- 		layout = wibox.layout.fixed.horizontal,
+	-- 	},
+	-- 	{ -- Middle
+	-- 		{ -- Title
+	-- 			align = "center",
+	-- 			widget = awful.titlebar.widget.titlewidget(c),
+	-- 		},
+	-- 		buttons = buttons,
+	-- 		layout = wibox.layout.flex.horizontal,
+	-- 	},
+	-- 	{ -- Right
+	-- 		awful.titlebar.widget.floatingbutton(c),
+	-- 		awful.titlebar.widget.maximizedbutton(c),
+	-- 		awful.titlebar.widget.stickybutton(c),
+	-- 		awful.titlebar.widget.ontopbutton(c),
+	-- 		awful.titlebar.widget.closebutton(c),
+	-- 		layout = wibox.layout.fixed.horizontal(),
+	-- 	},
+	-- 	layout = wibox.layout.align.horizontal,
+	-- })
 end)
 
 -- Enable sloppy focus, so that focus follows mouse.
-client.connect_signal("mouse::enter", function(c)
-	c:emit_signal("request::activate", "mouse_enter", { raise = false })
-end)
+-- client.connect_signal("mouse::enter", function(c)
+-- 	c:emit_signal("request::activate", "mouse_enter", { raise = false })
+-- end)
 
 client.connect_signal("focus", function(c)
 	c.border_color = beautiful.border_focus
@@ -609,3 +626,5 @@ beautiful.useless_gap = 3
 -- Autostart
 awful.spawn.with_shell("nitrogen --restore")
 awful.spawn.with_shell("compton")
+awful.spawn.with_shell("insync start")
+awful.spawn.with_shell("caprine")
