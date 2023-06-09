@@ -11,7 +11,10 @@ local wibox = require("wibox")
 local cpu_widget = require("./awesome-wm-widgets.cpu-widget.cpu-widget")
 local ram_widget = require("./awesome-wm-widgets.ram-widget.ram-widget")
 local volume_widget = require("./awesome-wm-widgets.volume-widget.volume")
-local battery_widget = require("./awesome-wm-widgets.battery-widget.battery")
+-- local battery_widget = require("./awesome-wm-widgets.battery-widget.battery")
+local battery_widget = require("battery-widget")
+local net_widgets = require("./net_widgets")
+local brightness_widget = require("awesome-wm-widgets.brightness-widget.brightness")
 -- Theme handling library
 local beautiful = require("beautiful")
 -- Notification library
@@ -258,13 +261,15 @@ awful.screen.connect_for_each_screen(function(s)
 		s.mytasklist, -- Middle widget
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
+			net_widgets.wireless({ interface = "wlp0s20f3" }),
+			brightness_widget(),
 			volume_widget({
 				widget_type = "arc",
 			}),
 			cpu_widget(),
 			ram_widget(),
 			wibox.widget.systray(),
-			battery_widget(),
+			battery_widget({}),
 			mytextclock,
 			s.mylayoutbox,
 		},
@@ -368,7 +373,7 @@ globalkeys = gears.table.join(
 
 	-- open browser
 	awful.key({ modkey }, "b", function()
-		awful.util.spawn("microsoft-edge-stable")
+		awful.util.spawn("google-chrome")
 	end, { description = "run Browser", group = "launcher" }),
 
 	-- open file Manager
@@ -380,6 +385,25 @@ globalkeys = gears.table.join(
 	awful.key({ modkey }, "q", function()
 		awful.util.spawn("cinnamon-settings")
 	end, { description = "run system settings", group = "launcher" }),
+
+	-- volume shortcuts
+	awful.key({ modkey }, "]", function()
+		volume_widget:inc(5)
+	end),
+	awful.key({ modkey }, "[", function()
+		volume_widget:dec(5)
+	end),
+	awful.key({ modkey }, "\\", function()
+		volume_widget:toggle()
+	end),
+
+	--brightness control
+	awful.key({ modkey }, ";", function()
+		brightness_widget:inc()
+	end, { description = "increase brightness", group = "custom" }),
+	awful.key({ modkey, "Shift" }, ";", function()
+		brightness_widget:dec()
+	end, { description = "decrease brightness", group = "custom" }),
 
 	awful.key({ modkey }, "x", function()
 		awful.prompt.run({

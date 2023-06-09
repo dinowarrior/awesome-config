@@ -1,0 +1,11 @@
+Volume
+modkey + ]
+modkey + [
+modkey + \\
+
+Brigthness
+modkey + ;
+modkey + Shift + ;
+
+
+
