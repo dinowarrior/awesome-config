@@ -7,6 +7,7 @@ local gears = require("gears")
 local awful = require("awful")
 require("awful.autofocus")
 -- Widget and layout library
+local calendar = require("calendar")
 local wibox = require("wibox")
 local cpu_widget = require("./awesome-wm-widgets.cpu-widget.cpu-widget")
 local ram_widget = require("./awesome-wm-widgets.ram-widget.ram-widget")
@@ -271,6 +272,7 @@ awful.screen.connect_for_each_screen(function(s)
 			wibox.widget.systray(),
 			battery_widget({}),
 			mytextclock,
+			calendar({}):attach(mytextclock),
 			s.mylayoutbox,
 		},
 	})
